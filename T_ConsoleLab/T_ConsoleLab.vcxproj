@@ -123,7 +123,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="default.cpp" />
+    <ClCompile Include="test.cpp" />
     <ClCompile Include="T_ConsoleLab.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Header_default.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

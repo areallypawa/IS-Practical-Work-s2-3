@@ -3,44 +3,41 @@
 #include <cstring>
 #include <cctype>
 #include <cmath>
+#include "Header_default.h"
 
 using namespace std;
 
-// ========== СТРУКТУРЫ ==========
-typedef struct {
-    double* data;
-    int size;
-    int capacity;
-} Stack;
-
-typedef struct {
-    char** data;
-    int size;
-    int capacity;
-} Array;
 
 // ========== ФУНКЦИИ ДЛЯ СТЕКА ==========
 void initStack(Stack* s) {
     s->capacity = 10;
     s->size = 0;
-    s->data = (double*)malloc(s->capacity * sizeof(double));
+    s->data = new char[s->capacity];
 }
 
-void pushStack(Stack* s, double value) {
+void pushStack(Stack* s, char value) {
     if (s->size >= s->capacity) {
-        s->capacity *= 2;
-        s->data = (double*)realloc(s->data, s->capacity * sizeof(double));
+        int newCapacity = s->capacity * 2;
+        char* newData = new char[newCapacity];
+
+        for (int i = 0; i < s->size; i++) {
+            newData[i] = s->data[i];
+        }
+
+        delete[] s->data;
+        s->data = newData;
+        s->capacity = newCapacity;
     }
     s->data[s->size++] = value;
 }
 
-double popStack(Stack* s) {
-    if (s->size == 0) return 0;
+char popStack(Stack* s) {
+    if (s->size == 0) return '\0';
     return s->data[--s->size];
 }
 
-double topStack(Stack* s) {
-    if (s->size == 0) return 0;
+char topStack(Stack* s) {
+    if (s->size == 0) return '\0';
     return s->data[s->size - 1];
 }
 
@@ -49,42 +46,10 @@ int isEmptyStack(Stack* s) {
 }
 
 void freeStack(Stack* s) {
-    free(s->data);
-    s->data = NULL;
+    delete[] s->data;
+    s->data = nullptr;
     s->size = 0;
     s->capacity = 0;
-}
-
-// ========== ФУНКЦИИ ДЛЯ ДИНАМИЧЕСКОГО МАССИВА ==========
-void initArray(Array* a) {
-    a->capacity = 10;
-    a->size = 0;
-    a->data = (char**)malloc(a->capacity * sizeof(char*));
-}
-
-void addToArray(Array* a, const char* value) {
-    if (a->size >= a->capacity) {
-        a->capacity *= 2;
-        a->data = (char**)realloc(a->data, a->capacity * sizeof(char*));
-    }
-    a->data[a->size] = (char*)malloc((strlen(value) + 1) * sizeof(char));
-    strcpy(a->data[a->size], value);
-    a->size++;
-}
-
-char* getFromArray(Array* a, int index) {
-    if (index < 0 || index >= a->size) return NULL;
-    return a->data[index];
-}
-
-void freeArray(Array* a) {
-    for (int i = 0; i < a->size; i++) {
-        free(a->data[i]);
-    }
-    free(a->data);
-    a->data = NULL;
-    a->size = 0;
-    a->capacity = 0;
 }
 
 // ========== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ==========
@@ -287,92 +252,83 @@ bool isValidPN(const string& s) {
     return true;
 }
 
-// ========== ПРЕОБРАЗОВАНИЕ INFIX -> RPN ==========
-void infixToRPN(const char* infix, Array* output) {
+// ========== ПРЕОБРАЗОВАНИЕ INFIX -> RPN (ВЫВОДИМ СРАЗУ) ==========
+void infixToRPN(const string& infix) {
     Stack operators;
     initStack(&operators);
-    int len = strlen(infix);
 
-    printf("\n=== ПРЕОБРАЗОВАНИЕ INFIX -> RPN ===\n");
+    cout << "\n=== ПРЕОБРАЗОВАНИЕ INFIX -> RPN ===\n";
+    cout << "RPN: ";
 
-    for (int i = 0; i < len; i++) {
+    for (size_t i = 0; i < infix.length(); i++) {
         char c = infix[i];
         if (c == ' ') continue;
 
         if (isdigit(c)) {
-            char number[64] = { 0 };
-            int pos = 0;
-            while (i < len && (isdigit(infix[i]) || infix[i] == '.')) {
-                number[pos++] = infix[i];
+            while (i < infix.length() && (isdigit(infix[i]) || infix[i] == '.')) {
+                cout << infix[i];
                 i++;
             }
+            cout << " ";
             i--;
-            addToArray(output, number);
-            printf("  Число %s -> выходной массив\n", number);
         }
         else if (c == '(') {
             pushStack(&operators, (double)c);
-            printf("  ( -> стек операторов\n");
+            cout << "\n  ( -> стек операторов";
         }
         else if (c == ')') {
             while (!isEmptyStack(&operators) && (char)topStack(&operators) != '(') {
-                char op[2] = { (char)popStack(&operators), 0 };
-                addToArray(output, op);
-                printf("  Оператор %s -> выходной массив\n", op);
+                cout << (char)popStack(&operators) << " ";
             }
             if (!isEmptyStack(&operators)) popStack(&operators);
-            printf("  ) -> удаляем из стека\n");
+            cout << "\n  ) -> удаляем из стека";
         }
         else if (isOperator(c)) {
             while (!isEmptyStack(&operators) && (char)topStack(&operators) != '(' &&
                 getPriority((char)topStack(&operators)) >= getPriority(c)) {
-                char op[2] = { (char)popStack(&operators), 0 };
-                addToArray(output, op);
-                printf("  Оператор %s -> выходной массив\n", op);
+                cout << (char)popStack(&operators) << " ";
             }
             pushStack(&operators, (double)c);
-            printf("  Оператор %c -> стек операторов\n", c);
+            cout << "\n  Оператор " << c << " -> стек";
         }
     }
 
     while (!isEmptyStack(&operators)) {
-        char op[2] = { (char)popStack(&operators), 0 };
-        addToArray(output, op);
-        printf("  Оператор %s -> выходной массив\n", op);
+        cout << (char)popStack(&operators) << " ";
     }
 
+    cout << endl;
     freeStack(&operators);
 }
 
 // ========== ВЫЧИСЛЕНИЕ RPN ==========
-double evaluateRPN(const char* rpn) {
+double evaluateRPN(const string& rpn) {
     Stack st;
     initStack(&st);
-    int len = strlen(rpn);
 
-    printf("\n=== ВЫЧИСЛЕНИЕ RPN ===\n");
+    cout << "\n=== ВЫЧИСЛЕНИЕ RPN ===\n";
 
-    for (int i = 0; i < len; i++) {
-        if (rpn[i] == ' ') continue;
+    for (size_t i = 0; i < rpn.length(); i++) {
+        char c = rpn[i];
+        if (c == ' ') continue;
 
-        if (isdigit(rpn[i])) {
-            char numStr[64] = { 0 };
-            int pos = 0;
-            while (i < len && (isdigit(rpn[i]) || rpn[i] == '.')) {
-                numStr[pos++] = rpn[i];
+        if (isdigit(c)) {
+            string numStr = "";
+            while (i < rpn.length() && (isdigit(rpn[i]) || rpn[i] == '.')) {
+                numStr += rpn[i];
                 i++;
             }
             i--;
-            double num = atof(numStr);
+            double num = stod(numStr);
             pushStack(&st, num);
-            printf("  Помещаем %.2f в стек\n", num);
+            cout << "  Помещаем " << num << " в стек\n";
         }
-        else if (isOperator(rpn[i])) {
+        else if (isOperator(c)) {
             double b = popStack(&st);
             double a = popStack(&st);
-            double result = applyOperator(a, b, rpn[i]);
+            double result = applyOperator(a, b, c);
             pushStack(&st, result);
-            printf("  %.2f %c %.2f = %.2f -> в стек\n", a, rpn[i], b, result);
+            cout << "  " << a << " " << c << " " << b << " = " << result << " -> в стек\n";
         }
     }
 
@@ -423,7 +379,7 @@ double evaluatePN(const char* pn) {
 int main() {
     setlocale(LC_ALL, "Russian");
 
-    while (1) {
+    do {
         system("cls");
         printf("Выберите режим:                         \n");
         printf("1. Инфиксная нотация                    \n");
@@ -455,24 +411,9 @@ int main() {
                 printf("Выходные данные: Invalid input\n");
             }
             else {
-                Array rpn;
-                initArray(&rpn);
-                infixToRPN(input, &rpn);
-
-                printf("\n  RPN: ");
-                for (int i = 0; i < rpn.size; i++) {
-                    printf("%s ", rpn.data[i]);
-                }
-                printf("\n");
-
-                char rpnString[512] = { 0 };
-                for (int i = 0; i < rpn.size; i++) {
-                    strcat(rpnString, rpn.data[i]);
-                    strcat(rpnString, " ");
-                }
-                result = evaluateRPN(rpnString);
-                printf("\nВыходные данные: %.2f\n", result);
-                freeArray(&rpn);
+                infixToRPN(input);
+                result = evaluateRPN(input);
+                cout << "\nВыходные данные: " << result << "\n";
             }
             break;
         }
@@ -501,7 +442,7 @@ int main() {
 
         }
         system("pause");
-    }
+    } while (current != countItems - 1);
 
     return 0;
 }
