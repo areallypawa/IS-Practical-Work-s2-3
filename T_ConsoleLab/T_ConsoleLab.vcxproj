@@ -123,12 +123,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="default.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="menu.cpp" />
+    <ClCompile Include="Polish_notation.cpp" />
+    <ClCompile Include="Reverse_polish_notation.cpp" />
     <ClCompile Include="test.cpp" />
     <ClCompile Include="T_ConsoleLab.cpp" />
+    <ClCompile Include="utils.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Header_default.h" />
+    <ClInclude Include="Reverse_polish_notation.hpp" />
+    <ClInclude Include="Stack.hpp" />
+    <ClInclude Include="menu.hpp" />
+    <ClInclude Include="Polish_notation.hpp" />
+    <ClInclude Include="utils.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
