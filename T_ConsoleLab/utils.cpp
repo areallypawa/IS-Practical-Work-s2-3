@@ -1,4 +1,6 @@
-#include "utils.hpp"
+#include "utils.hpp";
+
+std::map<char, double> variables;
 
 int getPriority(char op) {
     if (op == '+' || op == '-') return 1;
@@ -24,10 +26,14 @@ bool isDigit(char p) {
     return (p >= '0' && p <= '9');
 }
 
+bool isVariable(char c) {
+    return isalpha(c); // a, b, x, y...
+}
+
 bool isValidExpression(const string& s) {
     if (s.empty()) return false;
 
-    string allowed = "0123456789+-*/() ";
+    string allowed = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ+-*/ ";
     for (size_t i = 0; i < s.length(); i++) {
         if (allowed.find(s[i]) == string::npos) {
             return false;
@@ -49,7 +55,7 @@ bool isValidExpression(const string& s) {
     for (size_t i = 0; i < expr.length(); i++) {
         char c = expr[i];
 
-        if (isDigit(c)) {
+        if (isDigit(c) || isVariable(c)) {
             if (i == 0 || !isDigit(expr[i - 1])) {
                 numCount++;
             }

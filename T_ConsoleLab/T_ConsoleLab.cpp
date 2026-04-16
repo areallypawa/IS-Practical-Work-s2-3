@@ -12,10 +12,11 @@ using namespace std;
 
 int main() {
     setlocale(LC_ALL, "Russian");
-    char input[256];
+    string input;
 
     do {
         clear();
+       
         while (true) {
             show_menu(current, countItems, items, "МЕНЮ");
             int key = _getch();
@@ -25,11 +26,15 @@ int main() {
             if (key == 13) break;
         }
         
-        if (current == 3) { break; }
+        if (current == 3) { 
+            clearInput();
+            break; 
+        }
+
+       /* cin.ignore(1000000, '\n');*/
 
         cout << "Введите выражение: ";
-        fgets(input, 256, stdin);
-        input[strcspn(input, "\n")] = 0;
+        getline(cin, input);
         clear();
         cout << "Входные данные: " << input << '\n';
 

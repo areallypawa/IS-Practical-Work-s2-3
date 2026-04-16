@@ -1,5 +1,5 @@
 #include "Reverse_polish_notation.hpp";
-
+#include "utils.hpp";
 
 double evaluateRPN(const string& rpn) {
     Stack<double> st;
@@ -21,6 +21,13 @@ double evaluateRPN(const string& rpn) {
                     double num = stod(token);
                     pushStack(&st, num);
                     cout << "  Помещаем " << num << " в стек\n";
+                }
+                else if (isVariable(token[0])) {
+                    if (variables.find(token[0]) == variables.end()) {
+                        cout << "Введите значение для " << token[0] << ": ";
+                        cin >> variables[token[0]];
+                    }
+                    pushStack(&st, variables[token[0]]);
                 }
 
                 // ОПЕРАТОР
@@ -116,12 +123,13 @@ string infixToRPN(const string& infix) {
         if (c == ' ') continue;
 
         cout << "\n[Читаем]: " << c << endl;
-
+        
         // ===== ЧИСЛО =====
-        if (isdigit(c)) {
-            cout << "[ЧИСЛО] считываем число: ";
+        if (isdigit(c) || isVariable(c)) {
+            cout << "[ОПЕРАНД] считываем: ";
 
-            while (i < infix.length() && (isdigit(infix[i]) || infix[i] == '.')) {
+            while (i < infix.length() &&
+                (isdigit(infix[i]) || infix[i] == '.' || isVariable(infix[i]))) {
                 cout << infix[i];
                 rpn += infix[i];
                 i++;
@@ -200,7 +208,7 @@ bool isValidRPN(const string& s) {
     if (s.empty()) return false;
 
     // Проверка на допустимые символы
-    string allowed = "0123456789+-*/ ";
+    string allowed = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ+-*/ ";
     for (size_t i = 0; i < s.length(); i++) {
         if (allowed.find(s[i]) == string::npos) {
             return false;
@@ -221,7 +229,7 @@ bool isValidRPN(const string& s) {
             continue;
         }
 
-        if (isDigit(c)) {
+        if (isDigit(c) || isVariable(c)) {
             // Пропускаем всё число
             while (i < s.length() && (isDigit(s[i]) || s[i] == '.')) {
                 i++;

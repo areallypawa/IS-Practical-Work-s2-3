@@ -1,12 +1,12 @@
 #include "Polish_notation.hpp"
-
+#include "utils.hpp";
 
 // ========== ВЫЧИСЛЕНИЕ PN ==========
-double evaluatePN(const char* pn) {
+double evaluatePN(const string& pn) {
     Stack<double> st;
     initStack(&st);
 
-    int len = strlen(pn);
+    int len = pn.length();
 
     printf("\n=== ВЫЧИСЛЕНИЕ ПРЯМОЙ ПОЛЬСКОЙ НОТАЦИИ ===\n");
 
@@ -30,6 +30,13 @@ double evaluatePN(const char* pn) {
 
             printf("  Помещаем %.2f в стек\n", num);
         }
+        else if (isVariable(pn[i])) {
+            if (variables.find(pn[i]) == variables.end()) {
+                cout << "Введите значение для " << pn[i] << ": ";
+                cin >> variables[pn[i]];
+            }
+            pushStack(&st, variables[pn[i]]);
+        }
         else if (isOperator(pn[i])) {
             double a = popStack(&st);
             double b = popStack(&st);
@@ -48,13 +55,12 @@ double evaluatePN(const char* pn) {
     return result;
 }
 
-
 // ========== ПРОВЕРКА ДЛЯ ПРЯМОЙ ПОЛЬСКОЙ НОТАЦИИ (ППН/PN) ==========
 bool isValidPN(const string& s) {
     if (s.empty()) return false;
 
     // Проверка на допустимые символы
-    string allowed = "0123456789+-*/ ";
+    string allowed = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ+-*/ ";
     for (size_t i = 0; i < s.length(); i++) {
         if (allowed.find(s[i]) == string::npos) {
             return false;
@@ -69,7 +75,7 @@ bool isValidPN(const string& s) {
 
         if (c == ' ') continue;
 
-        if (isDigit(c)) {
+        if (isDigit(c) || isVariable(c)) {
             // Пропускаем всё число
             while (i < s.length() && (isDigit(s[i]) || s[i] == '.')) {
                 i++;
