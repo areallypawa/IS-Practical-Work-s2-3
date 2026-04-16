@@ -6,18 +6,18 @@
 //double evalPNWrapper(const std::string& s);
 //
 //int main() {
-//    // RPN тесты
+//    // RPN С‚РµСЃС‚С‹
 //    assert(evalRPNWrapper("2 3 +") == 5);
 //    assert(evalRPNWrapper("10 5 /") == 2);
 //
-//    // PN тесты
+//    // PN С‚РµСЃС‚С‹
 //    assert(evalPNWrapper("+ 2 3") == 5);
 //    assert(evalPNWrapper("/ 10 5") == 2);
 //
-//    // Невалидный ввод
+//    // РќРµРІР°Р»РёРґРЅС‹Р№ РІРІРѕРґ
 //    try {
 //        evalRPNWrapper("2 +");
-//        assert(false); // не должно сюда дойти
+//        assert(false); // РЅРµ РґРѕР»Р¶РЅРѕ СЃСЋРґР° РґРѕР№С‚Рё
 //    }
 //    catch (...) {}
 //

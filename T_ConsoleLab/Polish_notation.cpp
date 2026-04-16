@@ -1,14 +1,14 @@
 #include "Polish_notation.hpp"
 #include "utils.hpp";
 
-// ========== ВЫЧИСЛЕНИЕ PN ==========
+// ========== Р’Р«Р§РРЎР›Р•РќРР• PN ==========
 double evaluatePN(const string& pn) {
     Stack<double> st;
     initStack(&st);
 
     int len = pn.length();
 
-    printf("\n=== ВЫЧИСЛЕНИЕ ПРЯМОЙ ПОЛЬСКОЙ НОТАЦИИ ===\n");
+    printf("\n=== Р’Р«Р§РРЎР›Р•РќРР• РџР РЇРњРћР™ РџРћР›Р¬РЎРљРћР™ РќРћРўРђР¦РР ===\n");
 
     for (int i = len - 1; i >= 0; i--) {
         if (pn[i] == ' ') continue;
@@ -28,11 +28,11 @@ double evaluatePN(const string& pn) {
             double num = atof(numStr);
             pushStack(&st, num);
 
-            printf("  Помещаем %.2f в стек\n", num);
+            printf("  РџРѕРјРµС‰Р°РµРј %.2f РІ СЃС‚РµРє\n", num);
         }
         else if (isVariable(pn[i])) {
             if (variables.find(pn[i]) == variables.end()) {
-                cout << "Введите значение для " << pn[i] << ": ";
+                cout << "Р’РІРµРґРёС‚Рµ Р·РЅР°С‡РµРЅРёРµ РґР»СЏ " << pn[i] << ": ";
                 cin >> variables[pn[i]];
             }
             pushStack(&st, variables[pn[i]]);
@@ -45,7 +45,7 @@ double evaluatePN(const string& pn) {
 
             pushStack(&st, result);
 
-            printf("  %.2f %c %.2f = %.2f -> в стек\n",
+            printf("  %.2f %c %.2f = %.2f -> РІ СЃС‚РµРє\n",
                 a, pn[i], b, result);
         }
     }
@@ -55,11 +55,11 @@ double evaluatePN(const string& pn) {
     return result;
 }
 
-// ========== ПРОВЕРКА ДЛЯ ПРЯМОЙ ПОЛЬСКОЙ НОТАЦИИ (ППН/PN) ==========
+// ========== РџР РћР’Р•Р РљРђ Р”Р›РЇ РџР РЇРњРћР™ РџРћР›Р¬РЎРљРћР™ РќРћРўРђР¦РР (РџРџРќ/PN) ==========
 bool isValidPN(const string& s) {
     if (s.empty()) return false;
 
-    // Проверка на допустимые символы
+    // РџСЂРѕРІРµСЂРєР° РЅР° РґРѕРїСѓСЃС‚РёРјС‹Рµ СЃРёРјРІРѕР»С‹
     string allowed = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ+-*/ ";
     for (size_t i = 0; i < s.length(); i++) {
         if (allowed.find(s[i]) == string::npos) {
@@ -76,7 +76,7 @@ bool isValidPN(const string& s) {
         if (c == ' ') continue;
 
         if (isDigit(c) || isVariable(c)) {
-            // Пропускаем всё число
+            // РџСЂРѕРїСѓСЃРєР°РµРј РІСЃС‘ С‡РёСЃР»Рѕ
             while (i < s.length() && (isDigit(s[i]) || s[i] == '.')) {
                 i++;
             }
@@ -91,7 +91,7 @@ bool isValidPN(const string& s) {
         }
     }
 
-    // В ППН: чисел должно быть на 1 больше, чем операторов
+    // Р’ РџРџРќ: С‡РёСЃРµР» РґРѕР»Р¶РЅРѕ Р±С‹С‚СЊ РЅР° 1 Р±РѕР»СЊС€Рµ, С‡РµРј РѕРїРµСЂР°С‚РѕСЂРѕРІ
     if (numCount != opCount + 1) return false;
     if (numCount == 0) return false;
 
