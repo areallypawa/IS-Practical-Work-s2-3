@@ -442,7 +442,7 @@ int main() {
 
         }
         system("pause");
-    } while (current != countItems - 1);
+    } while (true);
 
     return 0;
 }
