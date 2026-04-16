@@ -1,0 +1,19 @@
+name: C++ CI (simple g++)
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Compile
+      run: g++ -std=c++17 T_ConsoleLab.cpp test.cpp -o test
+
+    - name: Run tests
+      run: ./test
