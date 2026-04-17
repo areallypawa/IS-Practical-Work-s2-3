@@ -14,7 +14,7 @@ int main() {
     SetConsoleOutputCP(65001);
     SetConsoleCP(65001);
     string input;
-
+    
     do {
         clear();
        
@@ -31,10 +31,13 @@ int main() {
             clearInput();
             break; 
         }
-
+        
        /* cin.ignore(1000000, '\n');*/
 
         cout << "Введите выражение: ";
+        if (cin.peek() == '\n') {
+            cin.ignore();
+        }
         getline(cin, input);
         clear();
         cout << "Входные данные: " << input << '\n';
