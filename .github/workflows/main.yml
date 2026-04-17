@@ -12,8 +12,8 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
-    - name: Compile
-      run: g++ -std=c++17 App/T_ConsoleLab.cpp tests/tests.cpp -o test
+    - name: Compile tests
+      run: g++ -std=c++17 tests/tests.cpp T_ConsoleLab/Reverse_polish_notation.cpp T_ConsoleLab/Polish_notation.cpp -o test
 
     - name: Run tests
       run: ./test
