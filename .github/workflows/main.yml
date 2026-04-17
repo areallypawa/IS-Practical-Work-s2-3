@@ -13,7 +13,7 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Compile
-      run: g++ -std=c++17 T_ConsoleLab.cpp test.cpp -o test
+      run: g++ -std=c++17 App/T_ConsoleLab.cpp tests/tests.cpp -o test
 
     - name: Run tests
       run: ./test
