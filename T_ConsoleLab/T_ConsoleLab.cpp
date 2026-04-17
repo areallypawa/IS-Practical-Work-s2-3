@@ -11,7 +11,8 @@ using namespace std;
 
 
 int main() {
-    setlocale(LC_ALL, "Russian");
+    SetConsoleOutputCP(65001);
+    SetConsoleCP(65001);
     string input;
 
     do {
