@@ -5,5 +5,5 @@
 #include "Stack.hpp"
 using namespace std;
 
-double evaluatePN(const string& pn);
+double evaluatePN(const string& expr);
 bool isValidPN(const string& s);

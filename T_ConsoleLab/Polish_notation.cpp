@@ -1,57 +1,103 @@
 #include "Polish_notation.hpp"
-#include "utils.hpp";
+#include "utils.hpp"
+
 
 // ========== ВЫЧИСЛЕНИЕ PN ==========
-double evaluatePN(const string& pn) {
-    Stack<double> st;
-    initStack(&st);
+double evaluatePN(const string& expr) {
+    Stack<double> values;
+    Stack<char> ops;
 
-    int len = pn.length();
+    initStack(&values);
+    initStack(&ops);
 
-    printf("\n=== ВЫЧИСЛЕНИЕ ПРЯМОЙ ПОЛЬСКОЙ НОТАЦИИ ===\n");
+    cout << "=== ВЫЧИСЛЕНИЕ INFIX ===\n";
 
-    for (int i = len - 1; i >= 0; i--) {
-        if (pn[i] == ' ') continue;
+    for (size_t i = 0; i < expr.size(); i++) {
 
-        if (isdigit(pn[i])) {
-            char numStr[64] = { 0 };
-            int start = i;
-            int pos = 0;
+        // ПРОПУСК ПРОБЕЛОВ
+        if (expr[i] == ' ') continue;
 
-            while (i >= 0 && (isdigit(pn[i]) || pn[i] == '.')) i--;
-            i++;
-
-            for (int j = i; j <= start; j++) {
-                numStr[pos++] = pn[j];
+        // ЧИСЛО
+        if (isdigit(expr[i]) || expr[i] == '.') {
+			cout << "\n[Читаем число]: " << expr[i] << endl;
+            string numStr;
+            while (i < expr.size() && (isdigit(expr[i]) || expr[i] == '.')) {
+                numStr += expr[i++];
             }
+            i--;
 
-            double num = atof(numStr);
-            pushStack(&st, num);
-
-            printf("  Помещаем %.2f в стек\n", num);
+            double num = stod(numStr);
+            pushStack(&values, num);
+            cout << "  Число: " << num << "\n";
         }
-        else if (isVariable(pn[i])) {
-            if (variables.find(pn[i]) == variables.end()) {
-                cout << "Введите значение для " << pn[i] << ": ";
-                cin >> variables[pn[i]];
+
+        // ПЕРЕМЕННАЯ
+        else if (isVariable(expr[i])) {
+            char var = expr[i];
+			cout << "\n[Читаем переменную]: " << var << endl;
+            if (variables.find(var) == variables.end()) {
+                cout << "Введите значение для " << var << ": ";
+                cin >> variables[var];
             }
-            pushStack(&st, variables[pn[i]]);
+            pushStack(&values, variables[var]);
         }
-        else if (isOperator(pn[i])) {
-            double a = popStack(&st);
-            double b = popStack(&st);
 
-            double result = applyOperator(a, b, pn[i]);
+        // ОТКРЫВАЮЩАЯ СКОБКА
+        else if (expr[i] == '(') {
+			cout << "\n[Открывающая скобка]: " << expr[i] << endl;
+            pushStack(&ops, expr[i]);
+        }
 
-            pushStack(&st, result);
+        // ЗАКРЫВАЮЩАЯ СКОБКА
+        else if (expr[i] == ')') {
+			cout << "\n[Закрывающая скобка]: " << expr[i] << endl;
+            while (ops.size > 0 && topStack(&ops) != '(') {
+                double b = popStack(&values);
+                double a = popStack(&values);
+                char op = popStack(&ops);
 
-            printf("  %.2f %c %.2f = %.2f -> в стек\n",
-                a, pn[i], b, result);
+                double res = applyOperator(a, b, op);
+                pushStack(&values, res);
+            }
+            popStack(&ops); // убрать '('
+        }
+
+        // ОПЕРАТОР
+        else if (isOperator(expr[i])) {
+			cout << "\n[Оператор]: " << expr[i] << endl;
+            while (ops.size > 0 &&
+                getPriority(topStack(&ops)) >= getPriority(expr[i])) {
+
+                double b = popStack(&values);
+                double a = popStack(&values);
+                char op = popStack(&ops);
+
+                double res = applyOperator(a, b, op);
+                pushStack(&values, res);
+
+                cout << "  " << a << " " << op
+                    << " " << b << " = " << res << "\n";
+            }
+            pushStack(&ops, expr[i]);
         }
     }
 
-    double result = popStack(&st);
-    freeStack(&st);
+    // ДОСЧИТЫВАЕМ
+    while (ops.size > 0) {
+		cout << "\n[Остаток в стеке операторов]: " << topStack(&ops) << endl;
+        double b = popStack(&values);
+        double a = popStack(&values);
+        char op = popStack(&ops);
+
+        double res = applyOperator(a, b, op);
+        pushStack(&values, res);
+    }
+
+    double result = popStack(&values);
+
+    freeStack(&values);
+    freeStack(&ops);
+
     return result;
 }
 
@@ -80,7 +126,7 @@ bool isValidPN(const string& s) {
             while (i < s.length() && (isDigit(s[i]) || s[i] == '.')) {
                 i++;
             }
-            i--;
+            
             numCount++;
         }
         else if (isOperator(c)) {

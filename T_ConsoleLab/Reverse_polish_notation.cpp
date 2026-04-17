@@ -1,5 +1,5 @@
-#include "Reverse_polish_notation.hpp";
-#include "utils.hpp";
+#include "Reverse_polish_notation.hpp"
+#include "utils.hpp"
 
 double evaluateRPN(const string& rpn) {
     Stack<double> st;
@@ -230,11 +230,12 @@ bool isValidRPN(const string& s) {
         }
 
         if (isDigit(c) || isVariable(c)) {
+			
             // Пропускаем всё число
             while (i < s.length() && (isDigit(s[i]) || s[i] == '.')) {
                 i++;
             }
-            i--;
+            
             numCount++;
             lastWasNumber = true;
             lastWasOperator = false;

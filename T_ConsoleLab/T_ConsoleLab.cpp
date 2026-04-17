@@ -35,9 +35,11 @@ int main() {
        /* cin.ignore(1000000, '\n');*/
 
         cout << "Введите выражение: ";
+
         if (cin.peek() == '\n') {
             cin.ignore();
         }
+
         getline(cin, input);
         clear();
         cout << "Входные данные: " << input << '\n';
@@ -67,7 +69,9 @@ int main() {
             break;
         }
         case 1: {
+
             valid = isValidRPN(input);
+
             if (!valid) {
                 cout << "Выходные данные: Invalid input\n";
             }
