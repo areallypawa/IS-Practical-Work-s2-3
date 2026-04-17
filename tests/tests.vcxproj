@@ -21,10 +21,9 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{b68a856c-109d-4b9d-9e5f-977d6a49730a}</ProjectGuid>
-    <RootNamespace>TConsoleLab</RootNamespace>
+    <ProjectGuid>{58f0e76e-e2be-47ad-94ce-23bdd158fc88}</ProjectGuid>
+    <RootNamespace>tests</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>App</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -124,19 +123,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="menu.cpp" />
-    <ClCompile Include="Polish_notation.cpp" />
-    <ClCompile Include="Reverse_polish_notation.cpp" />
-    <ClCompile Include="T_ConsoleLab.cpp" />
-    <ClCompile Include="utils.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Reverse_polish_notation.hpp" />
-    <ClInclude Include="Stack.hpp" />
-    <ClInclude Include="menu.hpp" />
-    <ClInclude Include="Polish_notation.hpp" />
-    <ClInclude Include="utils.hpp" />
+    <ClCompile Include="tests.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
