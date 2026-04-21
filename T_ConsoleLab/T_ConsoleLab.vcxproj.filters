@@ -18,9 +18,6 @@
     <ClCompile Include="T_ConsoleLab.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="main.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
     <ClCompile Include="Polish_notation.cpp">
       <Filter>Файлы ресурсов</Filter>
     </ClCompile>
